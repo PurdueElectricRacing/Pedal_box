@@ -46,19 +46,20 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "UserTasks.h"
+#include "CANProcess.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
-
 CAN_HandleTypeDef hcan2;
 
 osThreadId defaultTaskHandle;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+QueueHandle_t q_txcan;
+SemaphoreHandle_t m_CAN;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -100,6 +101,21 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
+
+
+  TaskHandle_t h_blink_LED_1 = NULL;
+  int ledID_1 = 3;
+  xTaskCreate(taskBlink_LED, "blink led task", 1024, &ledID_1, 1, &h_blink_LED_1);
+  TaskHandle_t h_txcan = NULL;
+  xTaskCreate(taskTXCAN, "TX CAN", 1024, NULL, 1, &h_txcan);
+
+  q_txcan = xQueueCreate(10, sizeof( CanTxMsgTypeDef ) );
+  m_CAN = xSemaphoreCreateMutex();
+
+  //  TaskHandle_t h_blink_LED_2 = NULL;
+//  int ledID_2 = 4;
+//  xTaskCreate(taskBlink_LED, "blink led task", 1024, &ledID_2, 1, &h_blink_LED_2);
+  //xTaskCreate(taskBlink_LED, "blink led task", 1024, NULL, 1, &h_blink_LED);
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
