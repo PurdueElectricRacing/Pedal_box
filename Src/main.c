@@ -52,6 +52,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+
 CAN_HandleTypeDef hcan2;
 
 osThreadId defaultTaskHandle;

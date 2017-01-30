@@ -16,7 +16,7 @@
 *						main module
 *
 ***************************************************************************/
-#include <CANProcess.h>
+#include "CANProcess.h"
 #include "stm32f4xx_hal.h"
 #include "cmsis_os.h"
 
