@@ -16,13 +16,14 @@
 *						main module
 *
 ***************************************************************************/
-#include "CANProcess.h"
 #include "stm32f4xx_hal.h"
 #include "cmsis_os.h"
 
+#include "CANProcess.h"
+
+
 extern CAN_HandleTypeDef hcan2;
 extern QueueHandle_t q_rxcan;
-extern QueueHandle_t q_txcan;
 extern SemaphoreHandle_t m_CAN;
 
 

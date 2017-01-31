@@ -2,8 +2,7 @@
 #include "cmsis_os.h"
 #include "main.h"
 #include "UserTasks.h"
-
-extern QueueHandle_t q_txcan;
+#include "CANProcess.h"
 
 void taskBlink_LED(int *ledID)
 {
@@ -47,6 +46,23 @@ void taskBlink_LED(int *ledID)
 
 
 
+	}
+	vTaskDelete(NULL);
+}
+
+void taskSendRawThrottle() {
+	for(;;) {
+		CanTxMsgTypeDef tx;
+		tx.StdId = 	ID_THROTTLE_RAW;
+		tx.IDE =  	CAN_ID_STD;
+		tx.RTR =	CAN_RTR_DATA;
+		tx.DLC =  	2;
+		tx.Data[0] = 0xab;
+		tx.Data[1] = 0xcd;
+
+		vTaskDelay(DELAY_SEND_THROTTLE);
+
+		xQueueSendToBack(q_txcan, &tx, 100);
 	}
 	vTaskDelete(NULL);
 }
