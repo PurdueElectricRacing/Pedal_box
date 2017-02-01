@@ -50,14 +50,18 @@ void taskBlink_LED(int *ledID)
 	vTaskDelete(NULL);
 }
 
+extern volatile uint16_t ADC1ConvertedValues[32];
+
+
 void taskSendRawThrottle() {
 	for(;;) {
+	    HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ADC1ConvertedValues, 4);
 		CanTxMsgTypeDef tx;
 		tx.StdId = 	ID_THROTTLE_RAW;
 		tx.IDE =  	CAN_ID_STD;
 		tx.RTR =	CAN_RTR_DATA;
 		tx.DLC =  	2;
-		tx.Data[0] = 0xab;
+		tx.Data[0] = (uint8_t)(ADC1ConvertedValues[0]);
 		tx.Data[1] = 0xcd;
 
 		vTaskDelay(DELAY_SEND_THROTTLE);
