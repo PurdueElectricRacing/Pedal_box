@@ -50,19 +50,39 @@ void taskBlink_LED(int *ledID)
 	vTaskDelete(NULL);
 }
 
-extern volatile uint16_t ADC1ConvertedValues[32];
+//extern volatile uint16_t ADC1ConvertedValues[32];
+extern ADC_HandleTypeDef hadc1;
 
 
-void taskSendRawThrottle() {
+void taskSendThrottleRaw() {
 	for(;;) {
-	    HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ADC1ConvertedValues, 4);
+		HAL_ADC_Start(&hadc1);
+		HAL_ADC_PollForConversion(&hadc1, 10);
+		uint16_t value = HAL_ADC_GetValue(&hadc1);
+		HAL_ADC_PollForConversion(&hadc1, 10);
+		uint16_t value2 = HAL_ADC_GetValue(&hadc1);
+		HAL_ADC_PollForConversion(&hadc1, 10);
+		uint16_t value3 = HAL_ADC_GetValue(&hadc1);
+		HAL_ADC_PollForConversion(&hadc1, 10);
+		uint16_t value4 = HAL_ADC_GetValue(&hadc1);
+
+		HAL_ADC_Stop(&hadc1);
 		CanTxMsgTypeDef tx;
 		tx.StdId = 	ID_THROTTLE_RAW;
 		tx.IDE =  	CAN_ID_STD;
 		tx.RTR =	CAN_RTR_DATA;
-		tx.DLC =  	2;
-		tx.Data[0] = (uint8_t)(ADC1ConvertedValues[0]);
-		tx.Data[1] = 0xcd;
+		tx.DLC =  	8;
+		tx.Data[1] = (uint8_t)(value);
+		tx.Data[0] = (value >> 8) & (0x0F);
+		tx.Data[3] = (uint8_t)(value2);
+		tx.Data[2] = (value2 >> 8) & (0x0F);
+		tx.Data[5] = (uint8_t)(value3);
+		tx.Data[4] = (value3 >> 8) & (0x0F);
+		tx.Data[7] = (uint8_t)(value4);
+		tx.Data[6] = (value4 >> 8) & (0x0F);
+
+		//tx.Data[3] = (uint8_t)(ADC1ConvertedValues[1]);
+		//tx.Data[2] = (ADC1ConvertedValues[1] >> 8) & (0x0F);
 
 		vTaskDelay(DELAY_SEND_THROTTLE);
 
@@ -70,3 +90,24 @@ void taskSendRawThrottle() {
 	}
 	vTaskDelete(NULL);
 }
+
+/*void taskSendBrakeRaw() {
+	for(;;) {
+	    HAL_ADC_Start(&hadc1);
+		CanTxMsgTypeDef tx;
+		tx.StdId = 	ID_BRAKE_RAW;
+		tx.IDE =  	CAN_ID_STD;
+		tx.RTR =	CAN_RTR_DATA;
+		tx.DLC =  	2;
+		tx.Data[1] = (uint8_t)(ADC1ConvertedValues[2]);
+		tx.Data[0] = (ADC1ConvertedValues[0] >> 8) & (0x0F);
+
+		tx.Data[3] = (uint8_t)(ADC1ConvertedValues[3]);
+		tx.Data[2] = (ADC1ConvertedValues[1] >> 8) & (0x0F);
+
+		vTaskDelay(DELAY_SEND_BRAKE);
+
+		xQueueSendToBack(q_txcan, &tx, 100);
+	}
+	vTaskDelete(NULL);
+}*/

@@ -79,7 +79,14 @@ void StartDefaultTask(void const * argument);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+
+//Initialize the ADC DMA array
+//value 0: throttle_1
+//value 1: throttle_2
+//value 2: brake_1
+//value 3: brake_2
 volatile uint16_t ADC1ConvertedValues[32];
+
 
 /* USER CODE END 0 */
 
@@ -105,6 +112,9 @@ int main(void)
   MX_CAN2_Init();
 
   /* USER CODE BEGIN 2 */
+
+  //start ADC
+
   //start blink task
   TaskHandle_t h_blink_LED_1 = NULL;
   int ledID_1 = 3;
@@ -116,7 +126,9 @@ int main(void)
 
   //start send throttle task
   TaskHandle_t h_send_throttle = NULL;
-  xTaskCreate(taskSendRawThrottle, "send throttle task", 1024, NULL, 1, &h_send_throttle);
+  xTaskCreate(taskSendThrottleRaw, "send throttle task", 1024, NULL, 1, &h_send_throttle);
+
+//  0xTaskCreate(taskSendBrakeRaw, "send brake task", 1024, NULL, 1, &h_send_brake);
 
   q_txcan = xQueueCreate(10, sizeof( CanTxMsgTypeDef ) );
   m_CAN = xSemaphoreCreateMutex();
@@ -232,7 +244,6 @@ static void MX_ADC1_Init(void)
 {
 
   ADC_ChannelConfTypeDef sConfig;
-  ADC_InjectionConfTypeDef sConfigInjected;
 
     /**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion) 
     */
@@ -287,49 +298,6 @@ static void MX_ADC1_Init(void)
   sConfig.Channel = ADC_CHANNEL_12;
   sConfig.Rank = 4;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-    /**Configures for the selected ADC injected channel its corresponding rank in the sequencer and its sample time 
-    */
-  sConfigInjected.InjectedChannel = ADC_CHANNEL_1;
-  sConfigInjected.InjectedRank = 1;
-  sConfigInjected.InjectedNbrOfConversion = 4;
-  sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_3CYCLES;
-  sConfigInjected.ExternalTrigInjecConvEdge = ADC_EXTERNALTRIGINJECCONVEDGE_RISING;
-  sConfigInjected.ExternalTrigInjecConv = ADC_EXTERNALTRIGINJECCONV_T1_CC4;
-  sConfigInjected.AutoInjectedConv = DISABLE;
-  sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
-  sConfigInjected.InjectedOffset = 0;
-  if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-    /**Configures for the selected ADC injected channel its corresponding rank in the sequencer and its sample time 
-    */
-  sConfigInjected.InjectedChannel = ADC_CHANNEL_2;
-  sConfigInjected.InjectedRank = 2;
-  if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-    /**Configures for the selected ADC injected channel its corresponding rank in the sequencer and its sample time 
-    */
-  sConfigInjected.InjectedChannel = ADC_CHANNEL_11;
-  sConfigInjected.InjectedRank = 3;
-  if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-    /**Configures for the selected ADC injected channel its corresponding rank in the sequencer and its sample time 
-    */
-  sConfigInjected.InjectedChannel = ADC_CHANNEL_12;
-  sConfigInjected.InjectedRank = 4;
-  if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
   {
     Error_Handler();
   }

@@ -17,21 +17,22 @@ extern QueueHandle_t q_txcan;
 #define ID_BAMOCAR_STATION_RX					0x181	//message sent by MC
 #define ID_BMS_PACK_VOLTAGE						0x300
 #define ID_THROTTLE_RAW							0x501
+#define ID_BRAKE_RAW							0x502
 
 //pedalbox defines //todo not sure if better to send whole frame or just pbmsg.
 #define PEDALBOX1_FILTER 						0	//filter number corresponding to the PEDALBOX1 message
-#define PEDALBOX1_THROT_7_0_BYTE				0
-#define PEDALBOX1_THROT_7_0_OFFSET				0
-#define PEDALBOX1_THROT_7_0_MASK				0b11111111
-#define PEDALBOX1_THROT_11_8_BYTE				1
-#define PEDALBOX1_THROT_11_8_OFFSET				4
-#define PEDALBOX1_THROT_11_8_MASK				0b11110000
-#define PEDALBOX1_BRAKE_7_0_BYTE				2
-#define PEDALBOX1_BRAKE_7_0_OFFSET				0
-#define PEDALBOX1_BRAKE_7_0_MASK				0b11111111
-#define PEDALBOX1_BRAKE_11_8_BYTE				1
-#define PEDALBOX1_BRAKE_11_8_OFFSET				0
-#define PEDALBOX1_BRAKE_11_8_MASK				0b00001111
+#define PEDALBOX1_THROT1_7_0_BYTE				0
+#define PEDALBOX1_THROT1_7_0_OFFSET				0
+#define PEDALBOX1_THROT1_7_0_MASK				0b11111111
+#define PEDALBOX1_THROT1_11_8_BYTE				1
+#define PEDALBOX1_THROT1_11_8_OFFSET				4
+#define PEDALBOX1_THROT1_11_8_MASK				0b11110000
+#define PEDALBOX1_THROT2_7_0_BYTE				2
+#define PEDALBOX1_THROT2_7_0_OFFSET				0
+#define PEDALBOX1_THROT2_7_0_MASK				0b11111111
+#define PEDALBOX1_THROT2_11_8_BYTE				1
+#define PEDALBOX1_THROT2_11_8_OFFSET				0
+#define PEDALBOX1_THROT2_11_8_MASK				0b00001111
 #define PEDALBOX1_EOR_BYTE						3
 #define PEDALBOX1_EOR_OFFSET					0
 #define PEDALBOX1_EOR_MASK						0b00000001
