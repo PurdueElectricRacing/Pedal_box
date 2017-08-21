@@ -52,7 +52,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
-DMA_HandleTypeDef hdma_adc1;
 
 CAN_HandleTypeDef hcan2;
 
@@ -68,7 +67,6 @@ SemaphoreHandle_t m_CAN;
 void SystemClock_Config(void);
 void Error_Handler(void);
 static void MX_GPIO_Init(void);
-static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_CAN2_Init(void);
 void StartDefaultTask(void const * argument);
@@ -107,7 +105,6 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_ADC1_Init();
   MX_CAN2_Init();
 
@@ -124,19 +121,19 @@ int main(void)
   TaskHandle_t h_txcan = NULL;
   xTaskCreate(taskTXCAN, "TX CAN", 1024, NULL, 1, &h_txcan);
 
-  //start send throttle task
+//  start send throttle task
   TaskHandle_t h_send_throttle = NULL;
   xTaskCreate(taskSendThrottleRaw, "send throttle task", 1024, NULL, 1, &h_send_throttle);
-
-//  0xTaskCreate(taskSendBrakeRaw, "send brake task", 1024, NULL, 1, &h_send_brake);
+//  TaskHandle_t h_send_brake = NULL;
+//  xTaskCreate(taskSendBrakeRaw, "send brake task", 1024, NULL, 1, &h_send_brake);
 
   q_txcan = xQueueCreate(10, sizeof( CanTxMsgTypeDef ) );
   m_CAN = xSemaphoreCreateMutex();
 
-  //  TaskHandle_t h_blink_LED_2 = NULL;
-//  int ledID_2 = 4;
-//  xTaskCreate(taskBlink_LED, "blink led task", 1024, &ledID_2, 1, &h_blink_LED_2);
-  //xTaskCreate(taskBlink_LED, "blink led task", 1024, NULL, 1, &h_blink_LED);
+    TaskHandle_t h_blink_LED_2 = NULL;
+  int ledID_2 = 4;
+  xTaskCreate(taskBlink_LED, "blink led task", 1024, &ledID_2, 1, &h_blink_LED_2);
+//  xTaskCreate(taskBlink_LED, "blink led task", 1024, NULL, 1, &h_blink_LED);
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -309,11 +306,11 @@ static void MX_CAN2_Init(void)
 {
 
   hcan2.Instance = CAN2;
-  hcan2.Init.Prescaler = 4;
+  hcan2.Init.Prescaler = 16;
   hcan2.Init.Mode = CAN_MODE_NORMAL;
   hcan2.Init.SJW = CAN_SJW_2TQ;
-  hcan2.Init.BS1 = CAN_BS1_7TQ;
-  hcan2.Init.BS2 = CAN_BS2_8TQ;
+  hcan2.Init.BS1 = CAN_BS1_2TQ;
+  hcan2.Init.BS2 = CAN_BS2_1TQ;
   hcan2.Init.TTCM = DISABLE;
   hcan2.Init.ABOM = ENABLE;
   hcan2.Init.AWUM = DISABLE;
@@ -324,21 +321,6 @@ static void MX_CAN2_Init(void)
   {
     Error_Handler();
   }
-
-}
-
-/** 
-  * Enable DMA controller clock
-  */
-static void MX_DMA_Init(void) 
-{
-  /* DMA controller clock enable */
-  __HAL_RCC_DMA2_CLK_ENABLE();
-
-  /* DMA interrupt init */
-  /* DMA2_Stream0_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 
 }
 

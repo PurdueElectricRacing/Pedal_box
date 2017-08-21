@@ -6,6 +6,8 @@
 
 void taskBlink_LED(int *ledID)
 {
+	vTaskDelay(5000); //TESTING1
+
 	for(;;)
 	{
 		GPIO_TypeDef* portToToggle;
@@ -55,6 +57,7 @@ extern ADC_HandleTypeDef hadc1;
 
 
 void taskSendThrottleRaw() {
+	vTaskDelay(5000); //TESTING1
 	for(;;) {
 		HAL_ADC_Start(&hadc1);
 		HAL_ADC_PollForConversion(&hadc1, 10);

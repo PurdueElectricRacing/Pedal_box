@@ -8,7 +8,7 @@
 #ifndef USERTASKS_H_
 #define USERTASKS_H_
 
-#define DELAY_SEND_THROTTLE				500 /portTICK_RATE_MS // in ms
+#define DELAY_SEND_THROTTLE				50 /portTICK_RATE_MS // in ms
 #define DELAY_SEND_BRAKE				10 /portTICK_RATE_MS // in ms
 
 
