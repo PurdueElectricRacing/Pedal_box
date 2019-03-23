@@ -22,9 +22,8 @@
 #include "CANProcess.h"
 
 
-extern CAN_HandleTypeDef hcan2;
-extern QueueHandle_t q_rxcan;
-extern SemaphoreHandle_t m_CAN;
+//extern CAN_HandleTypeDef hcan2;
+//extern SemaphoreHandle_t m_CAN;
 
 
 /***************************************************************************
@@ -47,11 +46,14 @@ extern SemaphoreHandle_t m_CAN;
 *			received CAN messages to be processed by RXCANProcessTask
 *
 ***************************************************************************/
+//Todo: Check if this function is required
+/*
 void ISR_RXCAN()
 {
 	xQueueSendFromISR(q_rxcan, (hcan2.pRxMsg), NULL);
+	xQueueSendFromISR
 }
-
+*/
 
 /***************************************************************************
 *
@@ -89,9 +91,10 @@ void ISR_RXCAN()
 //	  filter_conf.FilterActivation = ENABLE;
 //	  HAL_CAN_ConfigFilter(car.phcan, &filter_conf); //add filter
 //}
+/*
 void CANFilterConfig()
 {
-	  CAN_FilterConfTypeDef FilterConf;
+	  CAN_FilterTypeDef FilterConf;
 	  FilterConf.FilterIdHigh = 	0b0000000001000000; // 2
 	  FilterConf.FilterIdLow = 		0b0000000000100000; // 0
 	  FilterConf.FilterMaskIdHigh = 0x7ff << 5; //3
@@ -113,6 +116,21 @@ void CANFilterConfig()
 	  FilterConf.FilterActivation = ENABLE;
 	  HAL_CAN_ConfigFilter(&hcan2, &FilterConf);
 }
+*/
+void CANFilterConfig() {
+  CAN_FilterTypeDef FilterConf;
+  FilterConf.FilterIdHigh =         0x7ff; // 2 num
+  FilterConf.FilterIdLow =          0x7ff; // 0
+  FilterConf.FilterMaskIdHigh =     0x7ff << 5;       // 3
+  FilterConf.FilterMaskIdLow =      0x113 << 5;       // 1
+  FilterConf.FilterFIFOAssignment = CAN_FilterFIFO0;
+  FilterConf.FilterBank = 0;
+  FilterConf.FilterMode = CAN_FILTERMODE_IDLIST;
+  FilterConf.FilterScale = CAN_FILTERSCALE_16BIT;
+  FilterConf.FilterActivation = ENABLE;
+  HAL_CAN_ConfigFilter(car.phvcan, &FilterConf);
+}
+
 
 /***************************************************************************
 *
@@ -135,30 +153,27 @@ void CANFilterConfig()
 ***************************************************************************/
 void taskTXCAN()
 {
-	CanTxMsgTypeDef tx;
+CanTxMsgTypeDef tx;
 
-	for (;;)
-	{
-		//check if this task is triggered
-		if (xQueuePeek(q_txcan, &tx, portMAX_DELAY) == pdTRUE)
-		{
-			//check if CAN mutex is available
-			if (xSemaphoreTake(m_CAN, 50) == pdTRUE)
-			{
-				//HAL_CAN_StateTypeDef state = HAL_CAN_GetState(car.phcan);
-				//if (state != HAL_CAN_STATE_ERROR)
-				{
-					xQueueReceive(q_txcan, &tx, portMAX_DELAY);  //actually take item out of queue
-					hcan2.pTxMsg = &tx;
-					HAL_CAN_Transmit_IT(&hcan2);
-				}
-				xSemaphoreGive(m_CAN);  //release CAN mutex
-			}
-
-		}
+for (;;) {
+  //check if this task is triggered
+  if (xQueuePeek(car.q_txcan, &tx, portMAX_DELAY) == pdTRUE) {
+    xQueueReceive(car.q_txcan, &tx, portMAX_DELAY);  //actually take item out of queue
+    CAN_TxHeaderTypeDef header;
+    header.DLC = tx.DLC;
+    header.IDE = tx.IDE;
+    header.RTR = tx.RTR;
+    header.StdId = tx.StdId;
+    header.TransmitGlobalTime = DISABLE;
+    uint32_t mailbox;
+    while (!HAL_CAN_GetTxMailboxesFreeLevel(car.phvcan)); // while mailboxes not free
+    HAL_CAN_AddTxMessage(car.phvcan, &header, tx.Data, &mailbox);
+  	  }
 	}
 }
 
+//Todo: Try to resolve error
+/*
 void taskRXCAN()
 {
 	for (;;)
@@ -173,6 +188,7 @@ void taskRXCAN()
 		vTaskDelay(10);
 	}
 }
+*/
 
 /***************************************************************************
 *
@@ -196,6 +212,8 @@ void taskRXCAN()
 *     	The data is process and handled according to what kind of message is received
 *
 ***************************************************************************/
+//Todo: Try to resolve error
+/*
 void taskRXCANProcess()
 {
 	CanRxMsgTypeDef rx;  //CanRxMsgTypeDef to be received on the queue
@@ -211,6 +229,4 @@ void taskRXCANProcess()
 		}
 	}
 }
-
-
-
+*/

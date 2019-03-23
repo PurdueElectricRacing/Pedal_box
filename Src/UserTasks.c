@@ -43,7 +43,7 @@ void taskBlink_LED(int *ledID)
 		tx.Data[0] = 0xab;
 		tx.Data[1] = 0xcd;
 
-		xQueueSendToBack(q_txcan, &tx, 100);
+		xQueueSendToBack(car.q_txcan, &tx, 100);
 
 
 
@@ -89,7 +89,7 @@ void taskSendThrottleRaw() {
 
 		vTaskDelay(DELAY_SEND_THROTTLE);
 
-		xQueueSendToBack(q_txcan, &tx, 100);
+		xQueueSendToBack(car.q_txcan, &tx, 100);
 	}
 	vTaskDelete(NULL);
 }

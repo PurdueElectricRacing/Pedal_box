@@ -17,5 +17,4 @@ void taskSendThrottleRaw();
 void taskSendBrakeRaw();
 //void taskBlink_LED(void *pvParams);
 
-
 #endif /* USERTASKS_H_ */
