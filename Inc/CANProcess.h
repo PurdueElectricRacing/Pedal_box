@@ -37,6 +37,9 @@
 #define PEDALBOX1_IMP_OFFSET					1
 #define PEDALBOX1_IMP_MASK						0b00000010
 
+//tx defines
+#define QUEUE_SIZE_TXCAN_1      				10
+
 typedef struct{
 	QueueHandle_t q_txcan;
 

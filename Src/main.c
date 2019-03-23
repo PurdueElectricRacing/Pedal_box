@@ -170,6 +170,9 @@ int main(void)
   int ledID_2 = 4;
   xTaskCreate(taskBlink_LED, "blink led task", 1024, &ledID_2, 1, &h_blink_LED_2);
 //  xTaskCreate(taskBlink_LED, "blink led task", 1024, NULL, 1, &h_blink_LED);
+
+  //Create queue for tx
+  car.q_txcan = xQueueCreate(QUEUE_SIZE_TXCAN_1, sizeof(CanTxMsgTypeDef));
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
