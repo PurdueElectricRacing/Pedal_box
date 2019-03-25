@@ -125,26 +125,33 @@ int main(void)
   //start ADC
 
   //start blink task
-  TaskHandle_t h_blink_LED_1 = NULL;
-  int ledID_1 = 3;
-  xTaskCreate(taskBlink_LED, "blink led task", 1024, &ledID_1, 1, &h_blink_LED_1);
+  TaskHandle_t h_blink_LED_1;
+  xTaskCreate(taskBlink_LED, "blink led task", 128, NULL, 1, &h_blink_LED_1);
+
+  HAL_GPIO_TogglePin(GPIOD, LD6_Pin);
+  HAL_Delay(250);
+  HAL_GPIO_TogglePin(GPIOD, LD6_Pin);
+  HAL_Delay(250);
+  HAL_GPIO_TogglePin(GPIOD, LD6_Pin);
+  HAL_Delay(250);
+  HAL_GPIO_TogglePin(GPIOD, LD6_Pin);
+  HAL_Delay(250);
+  //  start send throttle task
+  TaskHandle_t h_send_throttle;
+  xTaskCreate(taskSendThrottleRaw, "send throttle task", 256, NULL, 1, &h_send_throttle);
 
   //start task to send CAN
-  TaskHandle_t h_txcan = NULL;
-  xTaskCreate(taskTXCAN, "TX CAN", 1024, NULL, 1, &h_txcan);
-
-//  start send throttle task
-  TaskHandle_t h_send_throttle = NULL;
-  xTaskCreate(taskSendThrottleRaw, "send throttle task", 1024, NULL, 1, &h_send_throttle);
-//  TaskHandle_t h_send_brake = NULL;
+	TaskHandle_t h_txcan;
+	xTaskCreate(taskTXCAN, "TX CAN", 256, NULL, 1, &h_txcan);
+  //  TaskHandle_t h_send_brake = NULL;
 //  xTaskCreate(taskSendBrakeRaw, "send brake task", 1024, NULL, 1, &h_send_brake);
 
   q_txcan = xQueueCreate(10, sizeof( CanTxMsgTypeDef ) );
   m_CAN = xSemaphoreCreateMutex();
 
-    TaskHandle_t h_blink_LED_2 = NULL;
-  int ledID_2 = 4;
-  xTaskCreate(taskBlink_LED, "blink led task", 1024, &ledID_2, 1, &h_blink_LED_2);
+//	TaskHandle_t h_blink_LED_2 = NULL;
+//  int ledID_2 = 4;
+//  xTaskCreate(taskBlink_LED, "blink led task", 1024, &ledID_2, 1, &h_blink_LED_2);
 //  xTaskCreate(taskBlink_LED, "blink led task", 1024, NULL, 1, &h_blink_LED);
   /* USER CODE END 2 */
 
@@ -541,6 +548,11 @@ void _Error_Handler(char * file, int line)
   /* User can add his own implementation to report the HAL error return state */
   while(1) 
   {
+  	HAL_GPIO_TogglePin(GPIOD, LD3_Pin);
+  	HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
+  	HAL_GPIO_TogglePin(GPIOD, LD5_Pin);
+  	HAL_GPIO_TogglePin(GPIOD, LD6_Pin);
+  	HAL_Delay(1000);
   }
   /* USER CODE END Error_Handler_Debug */ 
 }

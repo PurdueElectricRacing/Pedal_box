@@ -136,26 +136,27 @@ void CANFilterConfig()
 void taskTXCAN()
 {
 	CanTxMsgTypeDef tx;
-
+	HAL_GPIO_WritePin(GPIOD, LD3_Pin, GPIO_PIN_SET);
 	for (;;)
 	{
 		//check if this task is triggered
 		if (xQueuePeek(q_txcan, &tx, portMAX_DELAY) == pdTRUE)
 		{
 			//check if CAN mutex is available
-			if (xSemaphoreTake(m_CAN, 50) == pdTRUE)
-			{
+//			if (xSemaphoreTake(m_CAN, 50) == pdTRUE)
+//			{
 				//HAL_CAN_StateTypeDef state = HAL_CAN_GetState(car.phcan);
 				//if (state != HAL_CAN_STATE_ERROR)
-				{
+//				{
 					xQueueReceive(q_txcan, &tx, portMAX_DELAY);  //actually take item out of queue
 					hcan2.pTxMsg = &tx;
 					HAL_CAN_Transmit_IT(&hcan2);
-				}
-				xSemaphoreGive(m_CAN);  //release CAN mutex
-			}
+//				}
+//				xSemaphoreGive(m_CAN);  //release CAN mutex
+//			}
 
 		}
+		vTaskDelay(25);
 	}
 }
 

@@ -4,36 +4,36 @@
 #include "UserTasks.h"
 #include "CANProcess.h"
 
-void taskBlink_LED(int *ledID)
+void taskBlink_LED()
 {
-	vTaskDelay(5000); //TESTING1
+	//vTaskDelay(5000); //TESTING1
 
 	for(;;)
 	{
-		GPIO_TypeDef* portToToggle;
-		unsigned short pinToToggle;
+//		GPIO_TypeDef* portToToggle;
+//		unsigned short pinToToggle;
 
-		switch(*ledID) {
-			case 4:
-				//Green
-				portToToggle = LD4_GPIO_Port;
-				pinToToggle = LD4_Pin;
-				break;
-			case 3:
-				//Orange
-				portToToggle = LD3_GPIO_Port;
-				pinToToggle = LD3_Pin;
-				break;
-			default:
-				//Red
-				portToToggle = LD5_GPIO_Port;
-				pinToToggle = LD5_Pin;
-				break;
-		}
+//		switch(*ledID) {
+//			case 4:
+//				//Green
+//				portToToggle = LD4_GPIO_Port;
+//				pinToToggle = LD4_Pin;
+//				break;
+//			case 3:
+//				//Orange
+//				portToToggle = LD3_GPIO_Port;
+//				pinToToggle = LD3_Pin;
+//				break;
+//			default:
+//				//Red
+//				portToToggle = LD5_GPIO_Port;
+//				pinToToggle = LD5_Pin;
+//				break;
+//		}
 
-		HAL_GPIO_TogglePin(portToToggle, pinToToggle);
-//		HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
-		vTaskDelay(200/portTICK_RATE_MS);
+//		HAL_GPIO_TogglePin(portToToggle, pinToToggle);
+		HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
+		vTaskDelay(500);
 
 		CanTxMsgTypeDef tx;
 		tx.StdId = 	0x123;
