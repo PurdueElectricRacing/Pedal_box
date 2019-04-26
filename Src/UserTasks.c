@@ -10,28 +10,6 @@ void taskBlink_LED()
 
 	for(;;)
 	{
-//		GPIO_TypeDef* portToToggle;
-//		unsigned short pinToToggle;
-
-//		switch(*ledID) {
-//			case 4:
-//				//Green
-//				portToToggle = LD4_GPIO_Port;
-//				pinToToggle = LD4_Pin;
-//				break;
-//			case 3:
-//				//Orange
-//				portToToggle = LD3_GPIO_Port;
-//				pinToToggle = LD3_Pin;
-//				break;
-//			default:
-//				//Red
-//				portToToggle = LD5_GPIO_Port;
-//				pinToToggle = LD5_Pin;
-//				break;
-//		}
-
-//		HAL_GPIO_TogglePin(portToToggle, pinToToggle);
 		HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
 		vTaskDelay(500);
 
@@ -44,10 +22,6 @@ void taskBlink_LED()
 		tx.Data[1] = 0xcd;
 
 		xQueueSendToBack(q_txcan, &tx, 100);
-
-
-
-
 	}
 	vTaskDelete(NULL);
 }
@@ -83,9 +57,6 @@ void taskSendThrottleRaw() {
 		tx.Data[4] = (value3 >> 8) & (0x0F);
 		tx.Data[7] = (uint8_t)(value4);
 		tx.Data[6] = (value4 >> 8) & (0x0F);
-
-		//tx.Data[3] = (uint8_t)(ADC1ConvertedValues[1]);
-		//tx.Data[2] = (ADC1ConvertedValues[1] >> 8) & (0x0F);
 
 		vTaskDelay(DELAY_SEND_THROTTLE);
 
