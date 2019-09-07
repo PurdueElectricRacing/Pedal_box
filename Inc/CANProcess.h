@@ -37,24 +37,6 @@
 #define PEDALBOX1_IMP_OFFSET					1
 #define PEDALBOX1_IMP_MASK						0b00000010
 
-//tx defines
-#define QUEUE_SIZE_TXCAN_1      				10
-
-typedef struct{
-	QueueHandle_t q_txcan;
-
-	CAN_HandleTypeDef* phvcan;
-
-} Car_t;
-
-extern volatile Car_t car;
-
-//void ISR_RXCAN();
-void CANFilterConfig();
-void taskRXCANProcess();
-void taskTXCAN();
-void taskRXCAN();
-
 typedef struct {
   uint32_t StdId;    /*!< Specifies the standard identifier.
                           This parameter must be a number between Min_Data = 0 and Max_Data = 0x7FF */
@@ -75,7 +57,5 @@ typedef struct {
                           This parameter must be a number between Min_Data = 0 and Max_Data = 0xFF */
 
 } CanTxMsgTypeDef;
-
-//void processPedalboxFrame(CanRxMsgTypeDef * rx);
 
 #endif /* CANPROCESS_H_ */

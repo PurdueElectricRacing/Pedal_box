@@ -62,6 +62,8 @@
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
+void SVC_Handler(void);
+void PendSV_Handler(void);
 void TIM1_UP_TIM10_IRQHandler(void);
 void CAN2_TX_IRQHandler(void);
 void CAN2_RX0_IRQHandler(void);
