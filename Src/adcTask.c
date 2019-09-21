@@ -72,14 +72,14 @@ void getADC()
 	if (car.cyclePos == 0)
 	{
 		car.throttle1Run += car.throttle1[car.cyclePos] - car.throttle1[CYCLE_COUNT - 1];
-		car.throttle1Run += car.throttle2[car.cyclePos] - car.throttle2[CYCLE_COUNT - 1];
+		car.throttle2Run += car.throttle2[car.cyclePos] - car.throttle2[CYCLE_COUNT - 1];
 		car.brake1Run += car.brake1[car.cyclePos] - car.brake1[CYCLE_COUNT - 1];
 		car.brake2Run += car.brake2[car.cyclePos] - car.brake2[CYCLE_COUNT - 1];
 	}
 	else
 	{
 		car.throttle1Run += car.throttle1[car.cyclePos] - car.throttle1[car.cyclePos - 1];
-		car.throttle1Run += car.throttle2[car.cyclePos] - car.throttle2[car.cyclePos - 1];
+		car.throttle2Run += car.throttle2[car.cyclePos] - car.throttle2[car.cyclePos - 1];
 		car.brake1Run += car.brake1[car.cyclePos] - car.brake1[car.cyclePos - 1];
 		car.brake2Run += car.brake2[car.cyclePos] - car.brake2[car.cyclePos - 1];
 	}
@@ -112,5 +112,6 @@ void getADC()
 	{
 		car.cyclePos = 0;
 	}
+	HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
 	HAL_Delay(DELAY_SEND_THROTTLE);
 }
