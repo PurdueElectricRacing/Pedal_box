@@ -68,7 +68,6 @@ ADC_HandleTypeDef hadc1;
 CAN_HandleTypeDef hcan2;
 
 /* USER CODE BEGIN PV */
-volatile Car_t car;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -117,14 +116,13 @@ int main(void)
   MX_CAN2_Init();
   /* USER CODE BEGIN 2 */
   HAL_CAN_Start(&hcan2);
-  initADC();
+  taskADC();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  getADC();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
