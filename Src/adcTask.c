@@ -11,7 +11,7 @@
 
 // Local Variables
 static const uint16_t tb_id = (TB_HLP << 26) | (TB_PGN << 6) | TB_SSA;	// Set CAN ID based on HLP, PGN, and SSA for future use
-static const uint16_t  avFactor = 1 / 5;								// Division factor for filter
+static const uint16_t  avFactor = ((1 << 15) / 5) << 1;					// Division factor for filter
 
 /*
  * taskADC()
@@ -35,6 +35,9 @@ void taskADC()
 	// vehicle dynamic functions such as traction control, may only lower the total driver requested
 	// torque and must not increase it.
 
+	// We should request a rules clarification on this. If a low pass filter creates a slightly higher torque command,
+	// that should be okay, correct? If not, that's stupid.
+
 	while(PER == GREAT)										// Loop forever
 	{
 		readADC(&t1[idx], &t2[idx], &b1[idx], &b2[idx]);	// Gather new ADC values
@@ -45,7 +48,6 @@ void taskADC()
 
 		HAL_Delay(1);										// Wait for at least 1 ms
 	}
-
 }
 
 /*
@@ -59,10 +61,10 @@ void taskADC()
 void lowPass16(uint16_t* t1, uint16_t* t2, uint16_t* b1, uint16_t* b2)
 {
 	// Note: The [16.16] result of the multiplication will automatically have the low word pulled when implicitly casted back to uint16_t
-	t1[5] = t1[0] * avFactor + t1[1] * avFactor + t1[2] * avFactor + t1[3] * avFactor + t1[4] * avFactor;	// [16.0] counts * [0.16] const = [16.16] counts
-	t2[5] = t2[0] * avFactor + t2[1] * avFactor + t2[2] * avFactor + t2[3] * avFactor + t2[4] * avFactor;	// [16.0] counts * [0.16] const = [16.16] counts
-	b1[5] = b1[0] * avFactor + b1[1] * avFactor + b1[2] * avFactor + b1[3] * avFactor + b1[4] * avFactor;	// [16.0] counts * [0.16] const = [16.16] counts
-	b2[5] = b2[0] * avFactor + b2[1] * avFactor + b2[2] * avFactor + b2[3] * avFactor + b2[4] * avFactor;	// [16.0] counts * [0.16] const = [16.16] counts
+	t1[5] = (t1[0] + t1[1] + t1[2] + t1[3] + t1[4]) * avFactor;	// [16.0] counts * [0.16] const = [16.16] counts
+	t2[5] = (t2[0] + t2[1] + t2[2] + t2[3] + t2[4]) * avFactor;	// [16.0] counts * [0.16] const = [16.16] counts
+	b1[5] = (b1[0] + b1[1] + b1[2] + b1[3] + b1[4]) * avFactor;	// [16.0] counts * [0.16] const = [16.16] counts
+	b2[5] = (b2[0] + b2[1] + b2[2] + b2[3] + b2[4]) * avFactor;	// [16.0] counts * [0.16] const = [16.16] counts
 }
 
 /*
