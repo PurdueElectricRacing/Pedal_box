@@ -40,13 +40,13 @@ void taskADC()
 
 	while(PER == GREAT)										// Loop forever
 	{
-		readADC(&t1[idx], &t2[idx], &b1[idx], &b2[idx]);	// Gather new ADC values
-		lowPass16(t1, t2, b1, b2);							// Low pass filter ADC values
-		sendMsg(t1[5], t2[5], b1[5], b2[5]);				// Send values (lowPass16 uses first 5 values to filter and stores in 6th)
+		readADC(&t1[idx], &t2[idx], &b1[idx], &b2[idx]);	                                // Gather new ADC values
+		lowPass16(t1, t2, b1, b2);							        // Low pass filter ADC values
+		sendMsg(t1[5], t2[5], b1[5], b2[5]);				                        // Send values (lowPass16 uses first 5 values to filter and stores in 6th)
 		if(++idx == 5)										// Increment counter and reset when we've just accessed the last value
-			idx = 0;										// Reset if we are at the upper bound
+			idx = 0;									// Reset if we are at the upper bound
 
-		HAL_Delay(1);										// Wait for at least 1 ms
+		HAL_Delay(20);										// Wait for at least 1 ms
 	}
 }
 
@@ -56,7 +56,7 @@ void taskADC()
  * Performs 5th order finite impulse response low pass filtering on gathered ADC count samples
  * Using boxcar FIR for now. Will update to fit proper transfer function when it's not 1:20 a.m.
  *
- * Timing: Arbitrary (~1 ms)
+ * Timing: Arbitrary (~20 ms)
  */
 void lowPass16(uint16_t* t1, uint16_t* t2, uint16_t* b1, uint16_t* b2)
 {
@@ -72,7 +72,7 @@ void lowPass16(uint16_t* t1, uint16_t* t2, uint16_t* b1, uint16_t* b2)
  *
  * Gathers raw ADC values all in one go and passes them back to the calling function
  *
- * Timing: Arbitrary (~1 ms)
+ * Timing: Arbitrary (~20 ms)
  */
 void readADC(uint16_t* t1, uint16_t* t2, uint16_t* b1, uint16_t* b2)
 {
@@ -94,7 +94,7 @@ void readADC(uint16_t* t1, uint16_t* t2, uint16_t* b1, uint16_t* b2)
  *
  * Sends CAN frame based on given throttle and brake values
  *
- * Timing: Arbitrary (~1 ms)
+ * Timing: Arbitrary (~20 ms)
  */
 void sendMsg(uint16_t t1, uint16_t t2, uint16_t b1, uint16_t b2)
 {
