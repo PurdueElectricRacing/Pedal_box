@@ -103,14 +103,14 @@ void sendMsg(uint16_t t1, uint16_t t2, uint16_t b1, uint16_t b2)
 	uint32_t 			mailbox;			// Mailbox that header frame will be placed into prior to tx
 	CAN_TxHeaderTypeDef header;				// CAN header frame
 
-	data[1] = t1;							// Gather low byte of ADC value
-	data[0] = t1 >> 8;						// Gather second lowest byte of ADC value
-	data[3] = t2;							// Gather low byte of ADC value
-	data[2] = t2 >> 8;						// Gather second lowest byte of ADC value
-	data[5] = b1;							// Gather low byte of ADC value
-	data[4] = b1 >> 8;						// Gather second lowest byte of ADC value
-	data[7] = b2;							// Gather low byte of ADC value
-	data[6] = b2 >> 8;						// Gather second lowest byte of ADC value
+	data[1] = (uint8_t)  t1;							// Gather low byte of ADC value
+	data[0] = (uint8_t) (t1 >> 8);						// Gather second lowest byte of ADC value
+	data[3] = (uint8_t)  t2;							// Gather low byte of ADC value
+	data[2] = (uint8_t) (t2 >> 8);						// Gather second lowest byte of ADC value
+	data[5] = (uint8_t)  b1;							// Gather low byte of ADC value
+	data[4] = (uint8_t) (b1 >> 8);						// Gather second lowest byte of ADC value
+	data[7] = (uint8_t)  b2;							// Gather low byte of ADC value
+	data[6] = (uint8_t) (b2 >> 8);						// Gather second lowest byte of ADC value
 
 	header.DLC = TB_LENGTH;					// Set length of data to tx
 	header.IDE = CAN_ID_EXT;				// Set ID length to 29 bit (extended ID)
