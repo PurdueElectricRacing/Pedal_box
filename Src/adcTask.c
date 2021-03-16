@@ -40,11 +40,8 @@ void taskADC()
 
 	while(PER == GREAT)										// Loop forever
 	{
-		readADC(&t1[idx], &t2[idx], &b1[idx], &b2[idx]);	                                // Gather new ADC values
-		lowPass16(t1, t2, b1, b2);							        // Low pass filter ADC values
+		readADC(&t1[5], &t2[5], &b1[5], &b2[5]);	                                // Gather new ADC values
 		sendMsg(t1[5], t2[5], b1[5], b2[5]);				                        // Send values (lowPass16 uses first 5 values to filter and stores in 6th)
-		if(++idx == 5)										// Increment counter and reset when we've just accessed the last value
-			idx = 0;									// Reset if we are at the upper bound
 
 		HAL_Delay(20);										// Wait for at least 1 ms
 	}
@@ -104,18 +101,18 @@ void sendMsg(uint16_t t1, uint16_t t2, uint16_t b1, uint16_t b2)
 	CAN_TxHeaderTypeDef header;				// CAN header frame
 
 	data[1] = (uint8_t)  t1;							// Gather low byte of ADC value
-	data[0] = (uint8_t) (t1 >> 8);						// Gather second lowest byte of ADC value
+	data[0] = (uint8_t) ((t1 >> 8) & 0xF0);						// Gather second lowest byte of ADC value
 	data[3] = (uint8_t)  t2;							// Gather low byte of ADC value
-	data[2] = (uint8_t) (t2 >> 8);						// Gather second lowest byte of ADC value
+	data[2] = (uint8_t) ((t2 >> 8) & 0xF0);						// Gather second lowest byte of ADC value
 	data[5] = (uint8_t)  b1;							// Gather low byte of ADC value
-	data[4] = (uint8_t) (b1 >> 8);						// Gather second lowest byte of ADC value
+	data[4] = (uint8_t) ((b1 >> 8) & 0xF0);						// Gather second lowest byte of ADC value
 	data[7] = (uint8_t)  b2;							// Gather low byte of ADC value
-	data[6] = (uint8_t) (b2 >> 8);						// Gather second lowest byte of ADC value
+	data[6] = (uint8_t) ((b2 >> 8) & 0xF0);						// Gather second lowest byte of ADC value
 
 	header.DLC = TB_LENGTH;					// Set length of data to tx
-	header.IDE = CAN_ID_EXT;				// Set ID length to 29 bit (extended ID)
+	header.IDE = CAN_ID_STD;				// Set ID length to standard
 	header.RTR = CAN_RTR_DATA;				// Set frame type to data
-	header.StdId = tb_id;					// Set CAN ID to HLP + PGN + SSA
+	header.StdId = 0x101;					// Set CAN ID to HLP + PGN + SSA
 	header.TransmitGlobalTime = DISABLE;
 
 	HAL_CAN_AddTxMessage(&hcan2, &header, data, &mailbox);
